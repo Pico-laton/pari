@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Un site pour gérer des paris sportifs",
   "main": "app.js",
-  "license": "MIT"
   "scripts": {
     "start": "node app.js"
   },
