@@ -3,12 +3,22 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Sert les fichiers statiques (.css, .js, images, etc.)
 app.use('/static', express.static(path.join(__dirname, 'static')));
 
-// Sert index.html pour la racine
+// Route pour la racine
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'templates', 'index.html'));
+});
+
+// Route générique pour les autres fichiers HTML
+app.get('/:page', (req, res) => {
+  const page = req.params.page;
+  const filePath = path.join(__dirname, 'templates', page);
+  res.sendFile(filePath, err => {
+    if (err) {
+      res.status(404).send('Page non trouvée');
+    }
+  });
 });
 
 app.listen(PORT, () => {
