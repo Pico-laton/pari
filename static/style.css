@@ -4,6 +4,10 @@
         font-weight: 900;
         color:rgb(123, 10, 8)
     }
+    button{
+        text-decoration:none;
+        backgroud-color:rgba(239, 216, 9, 0.619);
+    }
     .center{
         text-align: center;
     }
