@@ -24,6 +24,7 @@
         overflow: hidden;
         background-color: rgba(239, 216, 9, 0.619);
         padding-bottom: 50px;
+        text-align:center;
     }
     ul li {
         float: right;
