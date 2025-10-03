@@ -12,9 +12,11 @@
         padding: 0;
         background-color: rgba(239, 216, 9, 0.41);
     }
-    nav{ 
+    nav{
+        width: 100%;
         background-color: rgba(239, 216, 9, 0.619);
         box-shadow: 0px 4px 6px rgba(130, 130, 9, 0.771);
+        margin-bottom:40px;
     }
     ul{
         list-style-type:none;
