@@ -1,1 +1,18 @@
-
+{
+  "name": "pari-sportif",
+  "version": "1.0.0",
+  "description": "Un site pour gérer des paris sportifs",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^5.1.0",
+    "mongoose": "^8.19.0"
+  }
+}
