@@ -53,8 +53,7 @@ app.post('/register', async (req, res) => {
     const { username, password } = req.body;
 
     // Vérification si l'utilisateur existe déjà
-    const existingUser = await User.findOne({ 
-      { username } // Recherche par email OU username
+    const existingUser = await User.findOne({ username }); // Recherche par email OU username
     });
     
     // Si utilisateur existe déjà
