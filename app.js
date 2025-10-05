@@ -5,14 +5,15 @@ const mongoose = require('mongoose'); // ODM (Object Document Mapping) pour Mong
 const bcrypt = require('bcryptjs'); // Module pour hacher les mots de passe
 const app = express(); // Création de l'application Express
 const PORT = process.env.PORT || 3000; // Port d'écoute (3000 par défaut)
+require('dotenv').config(); // Charge les variables d'environnement
+
+// Récupération depuis les variables d'environnement
+const uri = process.env.MONGODB_URI;
 
 // Middleware pour parser les données JSON et URL encoded
 app.use(express.json()); // Permet de lire les données JSON dans les requêtes
 app.use(express.urlencoded({ extended: true })); // Permet de lire les données de formulaires
 app.use('/static', express.static(path.join(__dirname, 'static'))); // Serve les fichiers statiques
-
-// Connexion à MongoDB - URI de connexion à la base de données
-const uri = "mongodb+srv://pavelverdeil_db_user:<db_password>@pari.pwaedbe.mongodb.net/pari_sportif?retryWrites=true&w=majority&appName=Pari";
 
 // Tentative de connexion à MongoDB
 mongoose.connect(uri)
