@@ -18,8 +18,10 @@ app.use('/static', express.static(path.join(__dirname, 'static'))); // Serve les
 // Tentative de connexion à MongoDB
 // Utilisez la variable d'environnement
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/pari', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+  ssl: true,
+  tlsAllowInvalidCertificates: false,
+  retryWrites: true,
+  w: 'majority'
 })
 .then(() => console.log('Connecté à MongoDB'))
 .catch(err => console.error('Erreur de connexion à MongoDB:', err));
