@@ -16,9 +16,13 @@ app.use(express.urlencoded({ extended: true })); // Permet de lire les données 
 app.use('/static', express.static(path.join(__dirname, 'static'))); // Serve les fichiers statiques
 
 // Tentative de connexion à MongoDB
-mongoose.connect(uri)
-  .then(() => console.log('Connecté à MongoDB')) // Succès de la connexion
-  .catch(err => console.error('Erreur de connexion à MongoDB:', err)); // Erreur de connexion
+// Utilisez la variable d'environnement
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/pari', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log('Connecté à MongoDB'))
+.catch(err => console.error('Erreur de connexion à MongoDB:', err));
 
 // Définition du schéma utilisateur (structure de données)
 const userSchema = new mongoose.Schema({
