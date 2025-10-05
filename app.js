@@ -61,7 +61,7 @@ app.post('/register', async (req, res) => {
     if (existingUser) {
       return res.status(400).json({ 
         success: false, 
-        message: 'Utilisateur ou email déjà existant' 
+        message: 'Utilisateur déjà existant' 
       });
     }
 
@@ -96,11 +96,10 @@ app.post('/register', async (req, res) => {
 // Route POST pour la connexion des utilisateurs
 app.post('/login', async (req, res) => {
   try {
-    // Récupération des données du formulaire
     const { username, password } = req.body;
 
-    // Recherche de l'utilisateur par email
-    const user = await User.findOne({ email });
+    // ✅ Recherche par username (correspond au schéma)
+    const user = await User.findOne({ username });
     if (!user) {
       return res.status(400).json({ 
         success: false, 
@@ -108,7 +107,6 @@ app.post('/login', async (req, res) => {
       });
     }
 
-    // Comparaison du mot de passe fourni avec le hash stocké
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ 
@@ -117,15 +115,16 @@ app.post('/login', async (req, res) => {
       });
     }
 
-    // Réponse de succès
     res.json({ 
       success: true, 
       message: 'Connexion réussie',
-      user: { username: user.username, } // Retourne infos utilisateur
+      user: { 
+        username: user.username,
+        createdAt: user.createdAt
+      }
     });
 
   } catch (error) {
-    // Gestion des erreurs
     console.error('Erreur connexion:', error);
     res.status(500).json({ 
       success: false, 
