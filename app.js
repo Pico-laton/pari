@@ -55,6 +55,7 @@ app.get('/:page', (req, res) => {
 // Route POST pour l'inscription des utilisateurs
 app.post('/register', async (req, res) => {
   try {
+    
     // Récupération des données du formulaire
     const { username, password } = req.body;
 
@@ -88,6 +89,12 @@ app.post('/register', async (req, res) => {
     });
 
   } catch (error) {
+    if (error.code === 11000) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Nom d\'utilisateur déjà utilisé' 
+      });
+    }
     // Gestion des erreurs
     console.error('Erreur inscription:', error);
     res.status(500).json({ 
@@ -101,6 +108,7 @@ app.post('/register', async (req, res) => {
 app.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
+    
 
     // ✅ Recherche par username (correspond au schéma)
     const user = await User.findOne({ username });
