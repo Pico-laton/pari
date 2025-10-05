@@ -1,0 +1,105 @@
+<!DOCTYPE html> <!-- Déclaration du type de document -->
+<html lang="fr"> <!-- Langue française -->
+<head>
+    <meta charset="UTF-8"> <!-- Encodage des caractères -->
+    <title>Inscription - Site de Paris</title> <!-- Titre de la page -->
+    <link rel="stylesheet" href="static/style.css"> <!-- Lien vers la feuille de style -->
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <!-- Navigation -->
+                <li><a href="login.html">Se Connecter</a></li>
+                <li><a href="bets.html">Parier</a></li>
+                <li><a href="index.html">Accueil</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Conteneur principal du formulaire -->
+    <div style="max-width: 400px; margin: 50px auto; padding: 20px;">
+        <h2>Créer un compte</h2> <!-- Titre du formulaire -->
+        
+        <!-- Formulaire d'inscription -->
+        <form id="registerForm">
+            <!-- Champ nom d'utilisateur -->
+            <div style="margin-bottom: 15px;">
+                <label for="username">Nom d'utilisateur:</label>
+                <input type="text" id="username" name="username" required style="width: 100%; padding: 8px;">
+            </div>
+            
+            <!-- Champ email -->
+            <div style="margin-bottom: 15px;">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required style="width: 100%; padding: 8px;">
+            </div>
+            
+            <!-- Champ mot de passe -->
+            <div style="margin-bottom: 15px;">
+                <label for="password">Mot de passe:</label>
+                <input type="password" id="password" name="password" required style="width: 100%; padding: 8px;">
+            </div>
+            
+            <!-- Bouton de soumission -->
+            <button type="submit" style="width: 100%; padding: 10px; background-color: #4CAF50; color: white; border: none;">
+                S'inscrire
+            </button>
+        </form>
+        
+        <!-- Zone d'affichage des messages -->
+        <p id="message" style="margin-top: 15px;"></p>
+        
+        <!-- Lien vers la page de connexion -->
+        <p>Déjà un compte? <a href="login.html">Se connecter</a></p>
+    </div>
+
+    <script>
+        // Écouteur d'événement pour la soumission du formulaire
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault(); // Empêche le rechargement de la page
+            
+            // Récupération des données du formulaire
+            const formData = {
+                username: document.getElementById('username').value,
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value
+            };
+
+            try {
+                // Envoi de la requête POST au serveur
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json', // Spécifie le type de contenu
+                    },
+                    body: JSON.stringify(formData) // Convertit les données en JSON
+                });
+
+                // Traitement de la réponse
+                const result = await response.json();
+                const messageElement = document.getElementById('message');
+                
+                if (result.success) {
+                    // Succès - affichage message vert
+                    messageElement.style.color = 'green';
+                    messageElement.textContent = result.message;
+                    // Redirection après 2 secondes
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 2000);
+                } else {
+                    // Erreur - affichage message rouge
+                    messageElement.style.color = 'red';
+                    messageElement.textContent = result.message;
+                }
+            } catch (error) {
+                // Erreur réseau
+                console.error('Erreur:', error);
+                document.getElementById('message').style.color = 'red';
+                document.getElementById('message').textContent = 'Erreur de connexion';
+            }
+        });
+    </script>
+</body>
+</html>
