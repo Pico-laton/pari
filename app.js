@@ -6,9 +6,10 @@ const bcrypt = require('bcryptjs'); // Module pour hacher les mots de passe
 const app = express(); // Création de l'application Express
 const PORT = process.env.PORT || 3000; // Port d'écoute (3000 par défaut)
 require('dotenv').config(); // Charge les variables d'environnement
-
 // Récupération depuis les variables d'environnement
 const uri = process.env.MONGODB_URI;
+const session = require('express-session');
+
 
 // Middleware pour parser les données JSON et URL encoded
 app.use(express.json()); // Permet de lire les données JSON dans les requêtes
@@ -145,6 +146,8 @@ app.post('/login', async (req, res) => {
     });
   }
 });
+
+
 
 // Démarrage du serveur
 app.listen(PORT, () => {
