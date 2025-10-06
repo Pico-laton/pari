@@ -76,7 +76,8 @@ app.post('/register', async (req, res) => {
     // Création d'un nouvel utilisateur
     const newUser = new User({
       username,
-      password: hashedPassword // Stocke le mot de passe haché
+      password: hashedPassword, // Stocke le mot de passe haché
+      points: 5
     });
 
     // Sauvegarde dans la base de données
