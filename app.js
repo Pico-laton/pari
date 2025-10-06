@@ -30,6 +30,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/pari', {
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true }, // Nom d'utilisateur obligatoire et unique
   password: { type: String, required: true }, // Mot de passe obligatoire
+  compteur: { type: Number,default: 5},
   createdAt: { type: Date, default: Date.now } // Date de création automatique
 });
 
@@ -76,8 +77,7 @@ app.post('/register', async (req, res) => {
     // Création d'un nouvel utilisateur
     const newUser = new User({
       username,
-      password: hashedPassword, // Stocke le mot de passe haché
-      points: 5
+      password: hashedPassword // Stocke le mot de passe haché
     });
 
     // Sauvegarde dans la base de données
