@@ -128,6 +128,8 @@ app.post('/login', async (req, res) => {
         message: 'Mot de passe incorrect' 
       });
     }
+    req.session.userID=user._id;
+    req.session.usernamùe=user.username;
 
     res.json({ 
       success: true, 
@@ -147,8 +149,13 @@ app.post('/login', async (req, res) => {
   }
 });
 
-
-
+app.use(session({
+  secret:process.env.SESSION_SECRET,
+  resqve.false,
+  saveUnitilazed:false,
+  cookie:{secure:false,maxAge:24*60*60*1000}
+}));
+  
 // Démarrage du serveur
 app.listen(PORT, () => {
   console.log(`Serveur démarré sur le port ${PORT}`);
