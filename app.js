@@ -160,7 +160,7 @@ app.use(session({
 
 app.get('api/user',async(req,res)=>{
   if (!res.session.userId){
-    retrun res.json({loggedIn:false});
+    return res.json({loggedIn:false});
 }
   const user=await User.findbyId(res.session.userId);
   res.json({
