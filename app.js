@@ -169,6 +169,10 @@ app.get('api/user',async(req,res)=>{
     compteur: user.compteur
   });
 });
+app.post('/logout',(req,res)=>{
+  req.session.destroy();
+  res.json({succes:true});
+});
 
 // Démarrage du serveur
 app.listen(PORT, () => {
