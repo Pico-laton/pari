@@ -131,12 +131,14 @@ app.post('/login', async (req, res) => {
     req.session.userID=user._id;
     req.session.usernamùe=user.username;
 
+
     res.json({ 
       success: true, 
       message: 'Connexion réussie',
       user: { 
         username: user.username,
-        createdAt: user.createdAt
+        createdAt: user.createdAt,
+        compteru:user.compteur
       }
     });
 
@@ -155,7 +157,19 @@ app.use(session({
   saveUnitilazed:false,
   cookie:{secure:false,maxAge:24*60*60*1000}
 }));
-  
+
+app.get('api/user',async(req,res)=>{
+  if (!res.session.userId){
+    retrun res.json({loggedIn:false});
+}
+  const user=await User.findbyId(res.session.userId);
+  res.json({
+    loggedIn: true,
+    username: user.username,
+    compteur: user.compteur
+  });
+});
+
 // Démarrage du serveur
 app.listen(PORT, () => {
   console.log(`Serveur démarré sur le port ${PORT}`);
