@@ -13,6 +13,6 @@ async function checkAuth(){
 
     if(userData.loggedIn){
         document.getElementById('login-link').innerHTML=
-        'Mon compte (${userData.username}) - Points: ${userData.compteur}';
+        `Mon compte (${userData.username}) - Points: ${userData.compteur}`;
         document.getElementById('login-link').href='#';
 }
