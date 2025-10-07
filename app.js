@@ -151,7 +151,7 @@ app.post('/login', async (req, res) => {
 
 app.use(session({
   secret:process.env.SESSION_SECRET,
-  resqve.false,
+  resave:false,
   saveUnitilazed:false,
   cookie:{secure:false,maxAge:24*60*60*1000}
 }));
