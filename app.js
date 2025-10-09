@@ -10,6 +10,12 @@ require('dotenv').config(); // Charge les variables d'environnement
 const uri = process.env.MONGODB_URI;
 const session = require('express-session');
 
+app.use(session({
+  secret:process.env.SESSION_SECRET,
+  resave:false,
+  saveUnitilazed:false,
+  cookie:{secure:false,maxAge:24*60*60*1000}
+}));
 
 // Middleware pour parser les données JSON et URL encoded
 app.use(express.json()); // Permet de lire les données JSON dans les requêtes
@@ -151,12 +157,7 @@ app.post('/login', async (req, res) => {
   }
 });
 
-app.use(session({
-  secret:process.env.SESSION_SECRET,
-  resave:false,
-  saveUnitilazed:false,
-  cookie:{secure:false,maxAge:24*60*60*1000}
-}));
+
 
 app.get('api/user',async(req,res)=>{
   if (!res.session.userId){
