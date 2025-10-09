@@ -139,7 +139,7 @@ app.post('/login', async (req, res) => {
         message: 'Mot de passe incorrect' 
       });
     }
-    req.session.userID=user._id;
+    req.session.userId=user._id;
     req.session.username = user.username;
     console.log("✅ Session créée :", req.session);
 
@@ -169,7 +169,7 @@ app.get('/api/user', async (req,res)=>{
    return res.json({ loggedIn: false });
 }
   
-  const user=await User.findById(res.session.userId);
+  const user=await User.findById(req.session.userId);
   if (!user) return res.json({ loggedIn: false });
   
   res.json({
