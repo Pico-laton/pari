@@ -6,6 +6,50 @@
     <link rel="stylesheet" href="static/style.css">
 </head>
 <body>
+        <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault(); // Empêche le rechargement
+            
+            // Récupération des données
+            const formData = {
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value
+            };
+
+            try {
+                // Requête de connexion
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                    credentials: 'include'
+                });
+
+                const result = await response.json();
+                const messageElement = document.getElementById('message');
+                
+                if (result.success) {
+                    messageElement.style.color = 'green';
+                    messageElement.textContent = result.message;
+                    // Stockage des infos utilisateur dans le localStorage
+                    localStorage.setItem('user', JSON.stringify(result.user));
+                    // Redirection vers l'accueil
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2000);
+                } else {
+                    messageElement.style.color = 'red';
+                    messageElement.textContent = result.message;
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                document.getElementById('message').style.color = 'red';
+                document.getElementById('message').textContent = 'Erreur de connexion';
+            }
+        });
+    </script>
     <header>
         <nav>
             <ul>
@@ -42,48 +86,6 @@
         <p>Pas de compte? <a href="register.html">S'inscrire</a></p>
     </div>
 
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault(); // Empêche le rechargement
-            
-            // Récupération des données
-            const formData = {
-                username: document.getElementById('username').value,
-                password: document.getElementById('password').value
-            };
 
-            try {
-                // Requête de connexion
-                const response = await fetch('/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData)
-                });
-
-                const result = await response.json();
-                const messageElement = document.getElementById('message');
-                
-                if (result.success) {
-                    messageElement.style.color = 'green';
-                    messageElement.textContent = result.message;
-                    // Stockage des infos utilisateur dans le localStorage
-                    localStorage.setItem('user', JSON.stringify(result.user));
-                    // Redirection vers l'accueil
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 2000);
-                } else {
-                    messageElement.style.color = 'red';
-                    messageElement.textContent = result.message;
-                }
-            } catch (error) {
-                console.error('Erreur:', error);
-                document.getElementById('message').style.color = 'red';
-                document.getElementById('message').textContent = 'Erreur de connexion';
-            }
-        });
-    </script>
 </body>
 </html>
