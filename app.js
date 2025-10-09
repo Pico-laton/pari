@@ -124,7 +124,7 @@ app.post('/login', async (req, res) => {
     
 
     // ✅ Recherche par name (correspond au schéma)
-    const  = await .findOne({ username });
+    const  = await User.findOne({ username });
     if (!user) {
       return res.status(400).json({ 
         success: false, 
