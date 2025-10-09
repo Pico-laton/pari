@@ -11,8 +11,12 @@ const uri = process.env.MONGODB_URI;
 
 const cors = require('cors');
 app.use(cors({
-  origin: true, // ou le domaine de ton front
-  credentials: true
+    origin: process.env.NODE_ENV === 'production' 
+      ? ['https://pari-zfuf.onrender.com']
+      : ['http://localhost:3000', 'http://127.0.0.1:3000'],
+    credentials: true
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 const session = require('express-session');
@@ -21,9 +25,14 @@ app.use(session({
   secret:process.env.SESSION_SECRET,
   resave:false,
   saveUninitialized: false,
+  store: process.env.NODE_ENV === 'production' 
+    ? new MongoStore({ mongooseConnection: mongoose.connection })
+    : null,
   cookie:{
     secure: process.env.NODE_ENV === 'production',
-    maxAge:24*60*60*1000
+    httpOnly: true,
+    maxAge:24*60*60*1000,
+    sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax'
   }
 }));
 
