@@ -12,28 +12,24 @@ const uri = process.env.MONGODB_URI;
 const cors = require('cors');
 app.use(cors({
     origin: process.env.NODE_ENV === 'production' 
-      ? ['https://pari-zfuf.onrender.com']
-      : ['http://localhost:3000', 'http://127.0.0.1:3000'],
-    credentials: true
-    methods: ['GET', 'POST'],
+        ? ['https://pari-zfuf.onrender.com']
+        : ['http://localhost:3000', 'http://127.0.0.1:3000'],
+    credentials: true,
+    methods: ['GET', 'POST'], // Cette ligne doit être dans l'objet CORS
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 const session = require('express-session');
-
 app.use(session({
-  secret:process.env.SESSION_SECRET,
-  resave:false,
-  saveUninitialized: false,
-  store: process.env.NODE_ENV === 'production' 
-    ? new MongoStore({ mongooseConnection: mongoose.connection })
-    : null,
-  cookie:{
-    secure: process.env.NODE_ENV === 'production',
-    httpOnly: true,
-    maxAge:24*60*60*1000,
-    sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax'
-  }
+    secret: process.env.SESSION_SECRET || 'dev-secret-change-in-production',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000,
+        sameSite: process.env.NODE_ENV === 'production' ? 'lax' : 'lax'
+    }
 }));
 
 // Middleware pour parser les données JSON et URL encoded
