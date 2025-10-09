@@ -1,3 +1,4 @@
+
 // Importation des modules nécessaires
 const express = require('express'); // Framework web pour Node.js
 const path = require('path'); // Module pour manipuler les chemins de fichiers
@@ -48,6 +49,7 @@ const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true }, // Nom d'utilisateur obligatoire et unique
   password: { type: String, required: true }, // Mot de passe obligatoire
   compteur: { type: Number,default: 5},
+    role: {type:String,enum:['user','admin'],default:'user'},
   createdAt: { type: Date, default: Date.now } // Date de création automatique
 });
 
