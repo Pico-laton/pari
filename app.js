@@ -188,6 +188,59 @@ app.post('/logout',(req,res)=>{
   res.json({succes:true});
 });
 
+const requireAuth=(req,res,next)=>{
+  if (!req.session.userId){
+    return res.status(401).json({error:'Non authentifié'});
+  }
+  next();
+};
+
+const requireRole = (role) => {
+  return async (req, res, next) => {
+    try {
+      const user = await User.findById(req.session.userId);
+      if (!user || user.role !== role) {
+        return res.status(403).json({ error: 'Accès refusé' });
+      }
+      req.currentUser = user; // Stocke l'utilisateur dans la requête
+      next();
+    } catch (error) {
+      res.status(500).json({ error: 'Erreur serveur' });
+    }
+  };
+};
+app.put('/api/users/:userId/points',
+  requireAuth,
+  requireRole('admin'),
+  async (req, res) => {
+    try{
+      const{userId}=req.params
+      const{points}=req.body
+      const user= await User.findByIdAndUpdate(
+        userId,
+        {compteur:points},
+        {new:true}
+      );
+      res.json({succes:true,user});
+    }catch(error){
+      res.status(500).json({error:'Erreur serveur'});
+    }
+    // Logique pour modifier les points
+  }
+);
+app.get('/api/users',
+  requireAuth,
+  requireRole('admin'),
+  async (req, res) => {
+    try{
+      const users=await User.find();
+      res.json({success:true,users})
+    }catch(error){
+      res.status(500).json({error:'Erreur serveur'})
+    }
+  }
+);
+
 // Démarrage du serveur
 app.listen(PORT, () => {
   console.log(`Serveur démarré sur le port ${PORT}`);
