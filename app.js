@@ -11,7 +11,7 @@ const uri = process.env.MONGODB_URI;
 
 const cors = require('cors');
 app.use(cors({
-  origin: 'https://pari-zfuf.onrender.com/', // ou le domaine de ton front
+  origin: true, // ou le domaine de ton front
   credentials: true
 }));
 
