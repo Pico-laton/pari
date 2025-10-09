@@ -6,7 +6,43 @@
     <link rel="stylesheet" href="static/style.css">
 </head>
 <body>
-        <script>
+       
+    <header>
+        <nav>
+            <ul>
+                <!-- Navigation mise à jour -->
+                <li><a href="register.html">S'inscrire</a></li> <!-- Nouveau lien -->
+                <li><a href="bets.html">Parier</a></li>
+                <li><a href="index.html">Accueil</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div style="max-width: 400px; margin: 50px auto; padding: 20px;">
+        <h2>Connexion</h2>
+        <form id="loginForm">
+            <div style="margin-bottom: 15px;">
+                <label for="username">Nom d'utilisateur:</label>
+                <input type="text" id="username" name="username" required style="width: 100%; padding: 8px;">
+            </div>
+            <!-- Champ mot de passe -->
+            <div style="margin-bottom: 15px;">
+                <label for="password">Mot de passe:</label>
+                <input type="password" id="password" name="password" required style="width: 100%; padding: 8px;">
+            </div>
+            
+            <!-- Bouton de connexion -->
+            <button type="submit" style="width: 100%; padding: 10px; background-color: #4CAF50; color: white; border: none;">
+                Se connecter
+            </button>
+        </form>
+        
+        <p id="message" style="margin-top: 15px;"></p>
+        
+        <!-- Lien vers l'inscription -->
+        <p>Pas de compte? <a href="register.html">S'inscrire</a></p>
+    </div>
+ <script>
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault(); // Empêche le rechargement
             
@@ -50,42 +86,6 @@
             }
         });
     </script>
-    <header>
-        <nav>
-            <ul>
-                <!-- Navigation mise à jour -->
-                <li><a href="register.html">S'inscrire</a></li> <!-- Nouveau lien -->
-                <li><a href="bets.html">Parier</a></li>
-                <li><a href="index.html">Accueil</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <div style="max-width: 400px; margin: 50px auto; padding: 20px;">
-        <h2>Connexion</h2>
-        <form id="loginForm">
-            <div style="margin-bottom: 15px;">
-                <label for="username">Nom d'utilisateur:</label>
-                <input type="text" id="username" name="username" required style="width: 100%; padding: 8px;">
-            </div>
-            <!-- Champ mot de passe -->
-            <div style="margin-bottom: 15px;">
-                <label for="password">Mot de passe:</label>
-                <input type="password" id="password" name="password" required style="width: 100%; padding: 8px;">
-            </div>
-            
-            <!-- Bouton de connexion -->
-            <button type="submit" style="width: 100%; padding: 10px; background-color: #4CAF50; color: white; border: none;">
-                Se connecter
-            </button>
-        </form>
-        
-        <p id="message" style="margin-top: 15px;"></p>
-        
-        <!-- Lien vers l'inscription -->
-        <p>Pas de compte? <a href="register.html">S'inscrire</a></p>
-    </div>
-
 
 </body>
 </html>
