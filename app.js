@@ -13,9 +13,9 @@ const session = require('express-session');
 app.use(session({
   secret:process.env.SESSION_SECRET,
   resave:false,
-  saveUnitilazed:false,
+  saveUninitialized: false,
   cookie:{
-    secure:false,
+    secure: process.env.NODE_ENV === 'production',
     maxAge:24*60*60*1000
   }
 }));
@@ -27,14 +27,9 @@ app.use('/static', express.static(path.join(__dirname, 'static'))); // Serve les
 
 // Tentative de connexion à MongoDB
 // Utilisez la variable d'environnement
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/pari', {
-  ssl: true,
-  tlsAllowInvalidCertificates: false,
-  retryWrites: true,
-  w: 'majority'
-})
-.then(() => console.log('Connecté à MongoDB'))
-.catch(err => console.error('Erreur de connexion à MongoDB:', err));
+mongoose.connect(uri || 'mongodb://localhost:27017/pari')
+  .then(() => console.log('Connecté à MongoDB'))
+  .catch(err => console.error('Erreur de connexion à MongoDB:', err));
 
 // Définition du schéma utilisateur (structure de données)
 const userSchema = new mongoose.Schema({
@@ -138,8 +133,7 @@ app.post('/login', async (req, res) => {
       });
     }
     req.session.userID=user._id;
-    req.session.usernamùe=user.username;
-
+    req.session.username = user.username;
 
     res.json({ 
       success: true, 
@@ -147,7 +141,7 @@ app.post('/login', async (req, res) => {
       user: { 
         username: user.username,
         createdAt: user.createdAt,
-        compteru:user.compteur
+        compteur:user.compteur
       }
     });
 
@@ -162,11 +156,11 @@ app.post('/login', async (req, res) => {
 
 
 
-app.get('api/user',async(req,res)=>{
-  if (!res.session.userId){
+app.get('/api/user',async(req,res)=>{
+  if (!req.session.userId){
     return res.json({loggedIn:false});
 }
-  const user=await User.findbyId(res.session.userId);
+  const user=await User.findById(res.session.userId);
   res.json({
     loggedIn: true,
     username: user.username,
