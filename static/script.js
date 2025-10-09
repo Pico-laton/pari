@@ -12,11 +12,11 @@ async function checkAuth(){
     const userData=await response.json();
 
     if(userData.loggedIn){
-        document.getElementById('login-link').innerHTML=
+        document.getElementById("login-link").innerHTML=
         `Mon compte (${userData.username}) - Points: ${userData.compteur}`;
-        document.getElementById('login-link').href='#';
+        document.getElementById("login-link").href='#';
     }
     else{
-        print("hello")
+        document.getElementById('login-link')
     }
 }
