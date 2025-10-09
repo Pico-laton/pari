@@ -17,7 +17,7 @@ async function checkAuth(){
         
         if(userData.loggedIn){
             loginLink.innerHTML=`Mon compte (${userData.username}) - Points: ${userData.compteur}`;
-            LogginLink.href='#';
+            LoginLink.href='#';
         } else {
             loginLink.innerHTML="Se connecter";
             loginLink.href="/login.html";
