@@ -8,9 +8,10 @@ const PORT = process.env.PORT || 3000; // Port d'écoute (3000 par défaut)
 require('dotenv').config(); // Charge les variables d'environnement
 // Récupération depuis les variables d'environnement
 const uri = process.env.MONGODB_URI;
+
 const cors = require('cors');
 app.use(cors({
-  origin: 'https://pari-zfuf.onrender.com/' // ou le domaine de ton front
+  origin: 'https://pari-zfuf.onrender.com/', // ou le domaine de ton front
   credentials: true
 }));
 
