@@ -13,12 +13,14 @@ async function checkAuth(){
     try{
         const response=await fetch('/api/user');
         const userData=await response.json();
-
+        const loginLink = document.getElementById("login-link");
+        
         if(userData.loggedIn){
-            document.getElementById("login-link").innerHTML=
-            `Mon compte (${userData.username}) - Points: ${userData.compteur}`;
-            document.getElementById("login-link").href='#';
-        }
+            loginLink.innerHTML=`Mon compte (${userData.username}) - Points: ${userData.compteur}`;
+            LogginLink.href='#';
+        } else {
+            loginLink.innerHTML="Se connecter";
+            loginLink.href="/login.html";
     }catch(error){
         console.log('Erreur auth:',error)
     }
