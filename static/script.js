@@ -5,18 +5,21 @@ window.onload = function() {
         alert("Les cotes s'affichent bientôt !");
     };
     document.body.appendChild(btn);
+
+    checkAuth();
 };
 
 async function checkAuth(){
-    const response=await fetch('/api/user');
-    const userData=await response.json();
+    try{
+        const response=await fetch('/api/user');
+        const userData=await response.json();
 
-    if(userData.loggedIn){
-        document.getElementById("login-link").innerHTML=
-        `Mon compte (${userData.username}) - Points: ${userData.compteur}`;
-        document.getElementById("login-link").href='#';
-    }
-    else{
-        document.getElementById('login-link')
+        if(userData.loggedIn){
+            document.getElementById("login-link").innerHTML=
+            `Mon compte (${userData.username}) - Points: ${userData.compteur}`;
+            document.getElementById("login-link").href='#';
+        }
+    }catch(error){
+        console.log('Erreur auth:',error)
     }
 }
