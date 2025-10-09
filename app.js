@@ -10,9 +10,10 @@ require('dotenv').config(); // Charge les variables d'environnement
 const uri = process.env.MONGODB_URI;
 const cors = require('cors');
 app.use(cors({
-  origin: 'https://pari-zfuf.onrender.com/ // ou le domaine de ton front
+  origin: 'https://pari-zfuf.onrender.com/' // ou le domaine de ton front
   credentials: true
 }));
+
 const session = require('express-session');
 
 app.use(session({
@@ -118,11 +119,11 @@ app.post('/register', async (req, res) => {
 // Route POST pour la connexion des utilisateurs
 app.post('/login', async (req, res) => {
   try {
-    const { name, password } = req.body;
+    const { username, password } = req.body;
     
 
     // ✅ Recherche par name (correspond au schéma)
-    const  = await .findOne({ name });
+    const  = await .findOne({ username });
     if (!user) {
       return res.status(400).json({ 
         success: false, 
@@ -139,8 +140,7 @@ app.post('/login', async (req, res) => {
     }
     req.session.userID=user._id;
     req.session.username = user.username;
-    
-console.log("✅ Session créée :", req.session);
+    console.log("✅ Session créée :", req.session);
 
     res.json({ 
       success: true, 
@@ -163,11 +163,14 @@ console.log("✅ Session créée :", req.session);
 
 
 
-app.get('/api/user',async(req,res)=>{
-  if (!req.session.userId){
-    return res.json({loggedIn:false});
+app.get('/api/user', async (req,res)=>{
+  if (!req.session.userId) {
+   return res.json({ loggedIn: false });
 }
+  
   const user=await User.findById(res.session.userId);
+  if (!user) return res.json({ loggedIn: false });
+  
   res.json({
     loggedIn: true,
     username: user.username,
