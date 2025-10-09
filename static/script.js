@@ -16,4 +16,7 @@ async function checkAuth(){
         `Mon compte (${userData.username}) - Points: ${userData.compteur}`;
         document.getElementById('login-link').href='#';
     }
+    else{
+        print("hello")
+    }
 }
