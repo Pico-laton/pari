@@ -14,7 +14,10 @@ app.use(session({
   secret:process.env.SESSION_SECRET,
   resave:false,
   saveUnitilazed:false,
-  cookie:{secure:false,maxAge:24*60*60*1000}
+  cookie:{
+    secure:false,
+    maxAge:24*60*60*1000
+  }
 }));
 
 // Middleware pour parser les données JSON et URL encoded
