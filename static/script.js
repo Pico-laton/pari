@@ -11,17 +11,18 @@ window.onload = function() {
 
 async function checkAuth(){
     try{
-        const response=await fetch('/api/user');
-        const userData=await response.json();
+        const response = await fetch('/api/user');
+        const userData = await response.json();
         const loginLink = document.getElementById("login-link");
         
         if(userData.loggedIn){
-            loginLink.innerHTML=`Mon compte (${userData.username}) - Points: ${userData.compteur}`;
-            LoginLink.href='#';
+            loginLink.innerHTML = `Mon compte (${userData.username}) - Points: ${userData.compteur}`;
+            loginLink.href = '#';  
         } else {
-            loginLink.innerHTML="Se connecter";
-            loginLink.href="/login.html";
-    }catch(error){
-        console.log('Erreur auth:',error)
+            loginLink.innerHTML = "Se connecter";
+            loginLink.href = "/login.html";
+        }
+    } catch(error){  
+        console.log('Erreur auth:', error);
     }
-}
+}  
