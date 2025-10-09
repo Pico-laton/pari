@@ -113,11 +113,11 @@ app.post('/register', async (req, res) => {
 // Route POST pour la connexion des utilisateurs
 app.post('/login', async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { name, password } = req.body;
     
 
-    // ✅ Recherche par username (correspond au schéma)
-    const user = await User.findOne({ username });
+    // ✅ Recherche par name (correspond au schéma)
+    const  = await .findOne({ name });
     if (!user) {
       return res.status(400).json({ 
         success: false, 
@@ -134,6 +134,8 @@ app.post('/login', async (req, res) => {
     }
     req.session.userID=user._id;
     req.session.username = user.username;
+    
+console.log("✅ Session créée :", req.session);
 
     res.json({ 
       success: true, 
