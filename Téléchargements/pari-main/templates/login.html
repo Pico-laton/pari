@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion - Site de paris</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+        <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault(); // Empêche le rechargement
+            
+            // Récupération des données
+            const formData = {
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value
+            };
+
+            try {
+                // Requête de connexion
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                    credentials: 'include'
+                });
+
+                const result = await response.json();
+                const messageElement = document.getElementById('message');
+                
+                if (result.success) {
+                    messageElement.style.color = 'green';
+                    messageElement.textContent = result.message;
+                    // Stockage des infos utilisateur dans le localStorage
+                    localStorage.setItem('user', JSON.stringify(result.user));
+                    // Redirection vers l'accueil
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2000);
+                } else {
+                    messageElement.style.color = 'red';
+                    messageElement.textContent = result.message;
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                document.getElementById('message').style.color = 'red';
+                document.getElementById('message').textContent = 'Erreur de connexion';
+            }
+        });
+    </script>
+    <header>
+        <nav>
+            <ul>
+                <!-- Navigation mise à jour -->
+                <li><a href="register.html">S'inscrire</a></li> <!-- Nouveau lien -->
+                <li><a href="bets.html">Parier</a></li>
+                <li><a href="index.html">Accueil</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div style="max-width: 400px; margin: 50px auto; padding: 20px;">
+        <h2>Connexion</h2>
+        <form id="loginForm">
+            <div style="margin-bottom: 15px;">
+                <label for="username">Nom d'utilisateur:</label>
+                <input type="text" id="username" name="username" required style="width: 100%; padding: 8px;">
+            </div>
+            <!-- Champ mot de passe -->
+            <div style="margin-bottom: 15px;">
+                <label for="password">Mot de passe:</label>
+                <input type="password" id="password" name="password" required style="width: 100%; padding: 8px;">
+            </div>
+            
+            <!-- Bouton de connexion -->
+            <button type="submit" style="width: 100%; padding: 10px; background-color: #4CAF50; color: white; border: none;">
+                Se connecter
+            </button>
+        </form>
+        
+        <p id="message" style="margin-top: 15px;"></p>
+        
+        <!-- Lien vers l'inscription -->
+        <p>Pas de compte? <a href="register.html">S'inscrire</a></p>
+    </div>
+
+
+</body>
+</html>

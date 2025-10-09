@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cours Complet Node.js + JavaScript + HTML</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .section {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        .download-btn {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>📚 Cours Complet Node.js + JavaScript + HTML</h1>
+
+    <div class="section">
+        <h2>📁 1. Structure d'un Projet Node.js</h2>
+        <pre>
+mon-projet/
+├── server.js          # Serveur principal
+├── package.json       # Dépendances du projet
+├── templates/         # Pages HTML
+│   ├── index.html
+│   ├── login.html
+│   └── register.html
+├── static/           # Fichiers statiques
+│   ├── css/
+│   ├── js/
+│   └── images/
+└── .env              Variables d'environnement
+        </pre>
+    </div>
+
+    <div class="section">
+        <h2>🚀 2. Installation et Setup</h2>
+        <h3>Initialisation du projet :</h3>
+        <pre>
+npm init -y                    # Crée package.json
+npm install express            # Framework web
+npm install mongoose           # Base de données MongoDB
+npm install bcryptjs           # Hash des mots de passe
+npm install express-session    # Gestion des sessions
+npm install dotenv             # Variables d'environnement
+        </pre>
+
+        <h3>Fichier package.json :</h3>
+        <pre>
+{
+  "name": "mon-projet",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.0",
+    "mongoose": "^7.0.0",
+    "bcryptjs": "^2.4.0",
+    "express-session": "^1.17.0",
+    "dotenv": "^16.0.0"
+  }
+}
+        </pre>
+    </div>
+
+    <div class="section">
+        <h2>🔧 3. Serveur Express de Base (server.js)</h2>
+        <pre>
+// Importation des modules
+const express = require('express');
+const path = require('path');
+const app = express();
+const PORT = 3000;
+
+// Middleware pour parser le JSON
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Servir les fichiers statiques
+app.use('/static', express.static(path.join(__dirname, 'static')));
+
+// Routes de base
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'templates', 'index.html'));
+});
+
+// Démarrer le serveur
+app.listen(PORT, () => {
+    console.log(`Serveur démarré sur http://localhost:${PORT}`);
+});
+        </pre>
+        <p><strong>Explication :</strong></p>
+        <ul>
+            <li><code>require()</code> : Importe un module</li>
+            <li><code>app.use()</code> : Configure les middlewares</li>
+            <li><code>express.static()</code> : Sert les fichiers CSS/JS/images</li>
+            <li><code>app.get()</code> : Définit une route GET</li>
+            <li><code>app.listen()</code> : Démarre le serveur</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>🗄️ 4. Base de Données avec Mongoose</h2>
+        <pre>
+const mongoose = require('mongoose');
+
+// Connexion à MongoDB
+mongoose.connect('mongodb://localhost:27017/mon-app')
+    .then(() => console.log('Connecté à MongoDB'))
+    .catch(err => console.error('Erreur:', err));
+
+// Définition d'un schéma
+const userSchema = new mongoose.Schema({
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    compteur: { type: Number, default: 0 },
+    createdAt: { type: Date, default: Date.now }
+});
+
+// Création du modèle
+const User = mongoose.model('User', userSchema);
+        </pre>
+        <p><strong>Concepts :</strong></p>
+        <ul>
+            <li><strong>Schéma</strong> : Structure des données</li>
+            <li><strong>Modèle</strong> : Interface pour interagir avec la collection</li>
+            <li><strong>Document</strong> : Une entrée dans la base</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>🔐 5. Inscription Utilisateur</h2>
+        <pre>
+app.post('/register', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+
+        // Vérifier si l'utilisateur existe
+        const existingUser = await User.findOne({ username });
+        if (existingUser) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Utilisateur déjà existant' 
+            });
+        }
+
+        // Hasher le mot de passe
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Créer nouvel utilisateur
+        const newUser = new User({
+            username,
+            password: hashedPassword
+        });
+
+        await newUser.save();
+
+        res.json({ 
+            success: true, 
+            message: 'Compte créé avec succès' 
+        });
+
+    } catch (error) {
+        console.error('Erreur:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Erreur serveur' 
+        });
+    }
+});
+        </pre>
+    </div>
+
+    <div class="section">
+        <h2>🔑 6. Connexion et Sessions</h2>
+        <pre>
+const session = require('express-session');
+
+app.use(session({
+    secret: 'mon-secret-super-securise',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 24 * 60 * 60 * 1000 } // 24 heures
+}));
+
+app.post('/login', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        const user = await User.findOne({ username });
+
+        if (!user) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Utilisateur non trouvé' 
+            });
+        }
+
+        // Vérifier le mot de passe
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Mot de passe incorrect' 
+            });
+        }
+
+        // Créer la session
+        req.session.userId = user._id;
+        req.session.username = user.username;
+
+        res.json({ 
+            success: true, 
+            message: 'Connexion réussie',
+            user: { 
+                username: user.username,
+                compteur: user.compteur
+            }
+        });
+
+    } catch (error) {
+        console.error('Erreur:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Erreur serveur' 
+        });
+    }
+});
+        </pre>
+    </div>
+
+    <div class="section">
+        <h2>🌐 7. HTML de Base (templates/index.html)</h2>
+        <pre>
+&lt;!DOCTYPE html&gt;
+&lt;html lang="fr"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Mon Application&lt;/title&gt;
+    &lt;link rel="stylesheet" href="/static/css/style.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;nav&gt;
+        &lt;a href="/"&gt;Accueil&lt;/a&gt;
+        &lt;a href="/login.html" id="login-link"&gt;Se connecter&lt;/a&gt;
+        &lt;a href="/register.html"&gt;S'inscrire&lt;/a&gt;
+    &lt;/nav&gt;
+
+    &lt;h1&gt;Bienvenue sur mon application&lt;/h1&gt;
+    &lt;div id="message"&gt;&lt;/div&gt;
+
+    &lt;script src="/static/js/script.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+        </pre>
+    </div>
+
+    <div class="section">
+        <h2>⚡ 8. JavaScript Côté Client (static/js/script.js)</h2>
+        <pre>
+// Fonction pour vérifier si l'utilisateur est connecté
+async function checkAuth() {
+    try {
+        const response = await fetch('/api/user');
+        const userData = await response.json();
+        
+        if (userData.loggedIn) {
+            document.getElementById('login-link').innerHTML = 
+                `Mon compte (${userData.username}) - Points: ${userData.compteur}`;
+            document.getElementById('login-link').href = '#';
+        }
+    } catch (error) {
+        console.error('Erreur:', error);
+    }
+}
+
+// Fonction pour gérer l'inscription
+async function register(username, password) {
+    try {
+        const response = await fetch('/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password })
+        });
+        
+        const result = await response.json();
+        alert(result.message);
+        
+        if (result.success) {
+            window.location.href = '/login.html';
+        }
+    } catch (error) {
+        console.error('Erreur:', error);
+    }
+}
+
+// Fonction pour gérer la connexion
+async function login(username, password) {
+    try {
+        const response = await fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert('Connexion réussie!');
+            window.location.href = '/';
+        } else {
+            alert(result.message);
+        }
+    } catch (error) {
+        console.error('Erreur:', error);
+    }
+}
+
+// Exécuter au chargement de la page
+document.addEventListener('DOMContentLoaded', function() {
+    checkAuth();
+    
+    // Gérer le formulaire d'inscription
+    const registerForm = document.getElementById('register-form');
+    if (registerForm) {
+        registerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            register(username, password);
+        });
+    }
+    
+    // Gérer le formulaire de connexion
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            login(username, password);
+        });
+    }
+});
+        </pre>
+    </div>
+
+    <div class="section">
+        <h2>🛣️ 9. Routes API Complémentaires</h2>
+        <pre>
+// Route pour récupérer les infos utilisateur
+app.get('/api/user', async (req, res) => {
+    if (!req.session.userId) {
+        return res.json({ loggedIn: false });
+    }
+    
+    const user = await User.findById(req.session.userId);
+    res.json({
+        loggedIn: true,
+        username: user.username,
+        compteur: user.compteur
+    });
+});
+
+// Route pour mettre à jour le compteur
+app.post('/api/update-compteur', async (req, res) => {
+    if (!req.session.userId) {
+        return res.status(401).json({ success: false });
+    }
+    
+    const { nouveauCompteur } = req.body;
+    await User.findByIdAndUpdate(req.session.userId, { 
+        compteur: nouveauCompteur 
+    });
+    
+    res.json({ success: true });
+});
+
+// Route de déconnexion
+app.post('/logout', (req, res) => {
+    req.session.destroy();
+    res.json({ success: true });
+});
+        </pre>
+    </div>
+
+    <div class="section">
+        <h2>🔧 10. Commandes Utiles</h2>
+        <pre>
+# Démarrer le serveur
+node server.js
+
+# Démarrer avec auto-reload (nodemon)
+npx nodemon server.js
+
+# Vérifier les processus sur le port 3000
+netstat -ano | findstr :3000
+
+# Tuer un processus
+taskkill /PID [numero] /F
+
+# Installer MongoDB local
+# Télécharger depuis https://www.mongodb.com/try/download/community
+        </pre>
+    </div>
+
+    <div class="section">
+        <h2>🎯 11. Bonnes Pratiques</h2>
+        <ul>
+            <li>✅ Utiliser les variables d'environnement (.env)</li>
+            <li>✅ Valider les données côté serveur</li>
+            <li>✅ Gérer les erreurs avec try/catch</li>
+            <li>✅ Hasher les mots de passe</li>
+            <li>✅ Utiliser des sessions sécurisées</li>
+            <li>❌ Éviter les mots de passe en clair</li>
+            <li>❌ Éviter les callbacks imbriquées</li>
+            <li>❌ Éviter le code répétitif</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>📥 Télécharger ce Cours</h2>
+        <button class="download-btn" onclick="downloadCourse()">
+            📄 Télécharger le cours en PDF
+        </button>
+        <button class="download-btn" onclick="downloadCode()">
+            💻 Télécharger les fichiers de code
+        </button>
+    </div>
+
+    <script>
+        function downloadCourse() {
+            const element = document.documentElement;
+            const opt = {
+                margin: 1,
+                filename: 'cours-nodejs-complet.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'cm', format: 'a4', orientation: 'portrait' }
+            };
+            
+            // Utiliser html2pdf.js si disponible
+            alert('Pour sauvegarder : Ctrl+P → Imprimer en PDF');
+        }
+
+        function downloadCode() {
+            const codeContent = `// SERVER.JS COMPLET
+${document.querySelectorAll('pre')[2].textContent}
+
+// MODÈLE USER
+${document.querySelectorAll('pre')[3].textContent}
+
+// INSCRIPTION
+${document.querySelectorAll('pre')[4].textContent}
+
+// CONNEXION
+${document.querySelectorAll('pre')[5].textContent}
+
+// HTML INDEX
+${document.querySelectorAll('pre')[6].textContent}
+
+// SCRIPT.JS CLIENT
+${document.querySelectorAll('pre')[7].textContent}
+
+// ROUTES API
+${document.querySelectorAll('pre')[8].textContent}`;
+
+            const blob = new Blob([codeContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'code-complet.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
