@@ -46,11 +46,11 @@ mongoose.connect(uri || 'mongodb://localhost:27017/pari')
 
 // Définition du schéma utilisateur (structure de données)
 const userSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true }, // Nom d'utilisateur obligatoire et unique
-  password: { type: String, required: true }, // Mot de passe obligatoire
-  compteur: { type: Number,default: 5},
+    username: { type: String, required: true, unique: true }, // Nom d'utilisateur obligatoire et unique
+    password: { type: String, required: true }, // Mot de passe obligatoire
+    compteur: { type: Number,default: 5},
     role: {type:String,enum:['user','admin'],default:'user'},
-  createdAt: { type: Date, default: Date.now } // Date de création automatique
+    createdAt: { type: Date, default: Date.now } // Date de création automatique
 });
 
 // Création du modèle User basé sur le schéma
