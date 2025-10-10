@@ -180,9 +180,10 @@ app.get('/api/user', async (req,res)=>{
   if (!user) return res.json({ loggedIn: false });
   
   res.json({
-    loggedIn: true,
-    username: user.username,
-    compteur: user.compteur
+      loggedIn: true,
+      username: user.username,
+      compteur: user.compteur,
+      role:user.role
   });
 });
 app.post('/logout',(req,res)=>{
