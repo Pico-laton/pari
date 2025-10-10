@@ -19,7 +19,7 @@ async function checkAuth(){
             loginLink.innerHTML = `Mon compte : ${userData.username} - Points: ${userData.compteur}`;
             loginLink.href = '#';  
         } else {
-            loginLink.innerHTML = "Se connecter";
+            loginLink.innerHTML = "Se Connecter";
             loginLink.href = "/login.html";
         }
     } catch(error){  
