@@ -1,6 +1,6 @@
 // static/js/admin.js
 
-let selectedUserId = null;
+let selectedUserId = [];
 
 // Vérifie si l'utilisateur est admin
 async function checkAdminStatus() {
@@ -30,52 +30,89 @@ async function loadUsersList() {
         if (data.success) {
             const usersListDiv = document.getElementById('user-list');
             usersListDiv.innerHTML = data.users.map(user => `
-                <div class="user-item" style="margin: 10px; padding: 10px; border: 1px solid #ccc;">
+                <div class="user-item" style="margin: 10px; padding: 10px; border: 1px solid #ccc; background: ${selectedUsers.includes(user._id) ? '#e0f7fa' : 'white'}">
                     <span>${user.username} - Points: ${user.compteur} - Rôle: ${user.role}</span>
-                    <input type="checkbox" onclick="selectUser('${user._id}', '${user.username}')" checked>
-                        <label>Sélectionner</label>
-                    </input>
+                    <input 
+                        type="checkbox" 
+                        ${selectedUsers.includes(user._id) ? 'checked' : ''}
+                        onchange="toggleUserSelection('${user._id}', '${user.username}')"
+                    >
+                    <label>Sélectionner</label>
                 </div>
             `).join('');
+            
+            updateSelectedUsersDisplay();
         }
     } catch (error) {
         console.error('Erreur chargement utilisateurs:', error);
     }
 }
 
-// Sélectionne un utilisateur pour modification
-function selectUser(userId, username) {
-    selectedUserId = userId;
-    document.getElementById('selected-user').textContent = `Utilisateur sélectionné: ${username}`;
+// Ajoute ou retire un utilisateur de la sélection
+function toggleUserSelection(userId, username) {
+    if (selectedUsers.includes(userId)) {
+        // Retire de la sélection
+        selectedUsers = selectedUsers.filter(id => id !== userId);
+    } else {
+        // Ajoute à la sélection
+        selectedUsers.push(userId);
+    }
+    
+    // Recharge l'affichage pour mettre à jour les couleurs
+    loadUsersList();
 }
 
-// Gère la modification des points
+// Met à jour l'affichage des utilisateurs sélectionnés
+function updateSelectedUsersDisplay() {
+    const selectedDisplay = document.getElementById('selected-user');
+    if (selectedUsers.length === 0) {
+        selectedDisplay.textContent = 'Aucun utilisateur sélectionné';
+    } else {
+        selectedDisplay.textContent = `${selectedUsers.length} utilisateur(s) sélectionné(s)`;
+    }
+}
+
 document.getElementById('update-points-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    if (!selectedUserId) {
-        alert('❌ Veuillez sélectionner un utilisateur');
+    if (selectedUsers.length === 0) {
+        alert('❌ Veuillez sélectionner au moins un utilisateur');
         return;
     }
     
     const newPoints = document.getElementById('new-points').value;
     
+    if (!newPoints) {
+        alert('❌ Veuillez entrer un nombre de points');
+        return;
+    }
+    
     try {
-        const response = await fetch(`/api/users/${selectedUserId}/points`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ compteur: parseInt(newPoints) })
-        });
+        // Modification pour CHAQUE utilisateur sélectionné
+        const promises = selectedUsers.map(userId => 
+            fetch(`/api/users/${userId}/points`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ compteur: parseInt(newPoints) })
+            })
+        );
         
-        const result = await response.json();
+        // Attend que toutes les requêtes soient terminées
+        const responses = await Promise.all(promises);
+        const results = await Promise.all(responses.map(r => r.json()));
         
-        if (result.success) {
-            alert('✅ Points modifiés avec succès');
+        // Vérifie si toutes les modifications ont réussi
+        const allSuccess = results.every(result => result.success);
+        
+        if (allSuccess) {
+            alert(`✅ Points modifiés avec succès pour ${selectedUsers.length} utilisateur(s)`);
             document.getElementById('new-points').value = '';
+            selectedUsers = []; // Réinitialise la sélection
             await loadUsersList(); // Recharge la liste
         } else {
-            alert('❌ Erreur lors de la modification');
+            alert('❌ Certaines modifications ont échoué');
         }
+        
     } catch (error) {
         console.error('Erreur:', error);
         alert('❌ Erreur de connexion');
