@@ -32,9 +32,9 @@ async function loadUsersList() {
             usersListDiv.innerHTML = data.users.map(user => `
                 <div class="user-item" style="margin: 10px; padding: 10px; border: 1px solid #ccc;">
                     <span>${user.username} - Points: ${user.compteur} - Rôle: ${user.role}</span>
-                    <button onclick="selectUser('${user._id}', '${user.username}')">
-                        Sélectionner
-                    </button>
+                    <input type="checkbox" onclick="selectUser('${user._id}', '${user.username}')" checked>
+                        <label>Sélectionner</label>
+                    </input>
                 </div>
             `).join('');
         }
@@ -64,12 +64,12 @@ document.getElementById('update-points-form').addEventListener('submit', async (
         const response = await fetch(`/api/users/${selectedUserId}/points`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ points: parseInt(newPoints) })
+            body: JSON.stringify({ compteur: parseInt(newPoints) })
         });
         
         const result = await response.json();
         
-        if (result.succes) {
+        if (result.success) {
             alert('✅ Points modifiés avec succès');
             document.getElementById('new-points').value = '';
             await loadUsersList(); // Recharge la liste
