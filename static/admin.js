@@ -1,6 +1,5 @@
-// static/js/admin.js
 
-let selectedUsersId = [];
+let selectedUsers = []; 
 
 // Vérifie si l'utilisateur est admin
 async function checkAdminStatus() {
